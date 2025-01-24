@@ -2,6 +2,7 @@ import express, { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "@repo/backend-common/config";
 import {SignupSchema} from "@repo/common/zodSchema";
+import {prismaClient} from "@repo/db/client";
 
 const PORT = 3002;
 const app = express();
@@ -25,6 +26,7 @@ app.post("/signup", (req: Request, res: Response) => {
   }
   console.log(req);
   try {
+    const conn = prismaClient.$connect();
     const id = 1; // Replace with actual user creation logic
     const token = jwt.sign({ userId: id }, JWT_SECRET);
     res.status(200).json({
