@@ -124,11 +124,28 @@ app.post("/room",auth, async (req:Request, res:Response) => {
   } catch (e) {
     res.status(500).json({
       type: "error",
-      msg: "Room creation failed",
+      msg: "Room already exists with this name",
       error: e,
     });
   }
 });
+
+app.get('/room/:roomId',async(req:Request,res:Response)=>{
+  const roomId = Number(req.params.roomId);
+  const messages = await prismaClient.chat.findMany({
+    where:{
+      roomId
+    },  
+    orderBy:{
+      id:"desc"
+    },
+    take:50
+  })
+  res.status(200).json({
+    type:"success",
+    data:messages
+  })
+})
 
 app.listen(PORT, () => {
   console.log(`Listening on port ${PORT}`);
